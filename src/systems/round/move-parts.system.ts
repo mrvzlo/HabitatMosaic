@@ -105,13 +105,16 @@ export async function removeAnimal(world: GameWorld) {
 }
 
 async function endRound(world: GameWorld) {
+  world.round++;
   UpdateScore(world);
   await AddCenterTiles(world);
+  if (world.round === 20) {
+    await endGame(world);
+    return;
+  }
   const randomDelete = Math.floor(Math.random() * 4);
   await clearStock(world, [randomDelete], [randomDelete]);
   await AddCenterTiles(world);
-  world.round++;
-  if (world.round === 20) await endGame(world);
 }
 
 async function endGame(world: GameWorld) {
