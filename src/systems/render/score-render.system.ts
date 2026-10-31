@@ -3,7 +3,6 @@ import { setTerrainScore } from "../scoring/terrain-score.system";
 import { drawPlayerHex } from "./hex-render.system";
 import GameWorld from "../../components/game-world";
 import { HEX_SIZE, SQRT3 } from "../../consts/sizes";
-import PlayerBoard from "../../components/player-board";
 import { drawAnimal } from "./animal-render.system";
 import { TilePairType } from "../../consts/enums/animal-tile-pair.type";
 
@@ -53,6 +52,9 @@ function addText(text: string, point: Point, container: Container) {
 
 function setScore(world: GameWorld) {
   setTerrainScore(world);
+  world.scoringRules.forEach((rule, i) => {
+    world.player.animalScore[i] = rule(world.player);
+  });
   world.player.score =
     world.player.animalScore.reduce((a, b) => a + b, 0) + world.player.terrainScore.reduce((a, b) => a + b, 0) + world.player.bonusScore;
 }

@@ -17,36 +17,43 @@ export function checkElementActiveState(state: GameStateType, element: GameEleme
       return element === GameElementType.BoardTile || element === GameElementType.AnimalControl;
   }
 }
-export function setGameStateToPickTile(world: GameWorld) {
-  world.gameState = GameStateType.PickTile;
-  updateTileStockVisibility(world, () => true);
-  updateAnimalStockVisibility(world, () => true);
+
+export function refreshGameState(world: GameWorld) {
+  setGameState(world, world.gameState);
+}
+
+export function setGameState(world: GameWorld, state: GameStateType) {
+  world.gameState = state;
+  updateTileStockVisibility(world, getTileStockVisibility(world));
+  updateAnimalStockVisibility(world, getAnimalStockVisibility(world));
   updateEdgeVisibility(world);
   updateControlsVisibility(world);
 }
 
-export function setGameStateToPlaceTile(world: GameWorld) {
-  world.gameState = GameStateType.PlaceTile;
-  updateTileStockVisibility(world, (i) => i === world.lastPickup?.tileIndex);
-  updateAnimalStockVisibility(world, () => false);
-  updateEdgeVisibility(world);
-  updateControlsVisibility(world);
+function getTileStockVisibility(world: GameWorld) {
+  switch (world.gameState) {
+    case GameStateType.PickTile:
+      return () => true;
+    case GameStateType.PlaceTile:
+      return (i: number) => i === world.lastPickup?.tileIndex;
+    case GameStateType.PickAnimal:
+    case GameStateType.PlaceAnimal:
+    case GameStateType.GameOver:
+      return () => false;
+  }
 }
 
-export function setGameStateToPickAnimal(world: GameWorld) {
-  world.gameState = GameStateType.PickAnimal;
-  updateTileStockVisibility(world, () => false);
-  updateAnimalStockVisibility(world, () => true);
-  updateEdgeVisibility(world);
-  updateControlsVisibility(world);
-}
-
-export function setGameStateToPlaceAnimal(world: GameWorld) {
-  world.gameState = GameStateType.PlaceAnimal;
-  updateTileStockVisibility(world, () => false);
-  updateAnimalStockVisibility(world, (i) => i === world.lastPickup?.animalIndex);
-  updateEdgeVisibility(world);
-  updateControlsVisibility(world);
+function getAnimalStockVisibility(world: GameWorld) {
+  switch (world.gameState) {
+    case GameStateType.PickTile:
+    case GameStateType.PickAnimal:
+      return () => true;
+    case GameStateType.PlaceAnimal:
+      return (i: number) => i === world.lastPickup?.animalIndex;
+    case GameStateType.PlaceTile:
+    case GameStateType.GameOver:
+      return () => false;
+  }
 }
 
 function updateTileStockVisibility(world: GameWorld, show: (i: number) => boolean) {

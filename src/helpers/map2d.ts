@@ -23,6 +23,10 @@ export default class Map2D<T> {
     this.inner.delete(key);
   }
 
+  clear() {
+    this.inner.clear();
+  }
+
   getKey(point: Coords) {
     return point.intX + "|" + point.intY;
   }

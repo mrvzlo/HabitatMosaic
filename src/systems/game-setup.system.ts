@@ -9,6 +9,11 @@ import Map2D from "../helpers/map2d";
 import { GameStateType } from "../consts/enums/game-state.type";
 import { IdManager } from "../helpers/id-manager";
 import { TilePairType } from "../consts/enums/animal-tile-pair.type";
+import { getBearSubType } from "./scoring/bear-scoring.system";
+import { getHawkSubType } from "./scoring/hawk-scoring.system";
+import { getElkSubType } from "./scoring/elk-scoring.system";
+import { getFishSubType } from "./scoring/fish-scoring.system";
+import { getFoxSubType } from "./scoring/fox-scoring.system";
 
 export function SetupGame(app: Application) {
   const idMngr = new IdManager();
@@ -19,6 +24,7 @@ export function SetupGame(app: Application) {
     TilePairType.FishSea,
     TilePairType.FoxLawn,
   ];
+  const scoringRules = [getBearSubType(0), getHawkSubType(0), getElkSubType(0), getFishSubType(0), getFoxSubType(0)];
   const world: GameWorld = {
     center: setupGameBoard(animalSetup, idMngr),
     player: setupPlayerBoard(animalSetup, idMngr),
@@ -33,6 +39,7 @@ export function SetupGame(app: Application) {
     controlsContiner: new Container(),
     animalSetup,
     idMngr,
+    scoringRules,
   };
   return world;
 }

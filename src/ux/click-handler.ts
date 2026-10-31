@@ -4,10 +4,10 @@ import Hitbox from "../components/hitbox";
 import { SQRT3 } from "../consts/sizes";
 import { GameStateType } from "../consts/enums/game-state.type";
 import { animateTileRotate } from "../systems/animations/tile-animation.system";
-import { DrawBoard, UpdateScore } from "../systems/draw-board.system";
+import { DrawBoard, RedrawBoard, UpdateScore } from "../systems/draw-board.system";
 import { GameElementType } from "../consts/enums/game-element.type";
 import { pickAnimal, pickTile, placeAnimal, placeTile, removeAnimal } from "../systems/round/move-parts.system";
-import { checkElementActiveState, setGameStateToPickAnimal, setGameStateToPickTile } from "../systems/round/state-management.system";
+import { checkElementActiveState, setGameState } from "../systems/round/state-management.system";
 import { CancelKey, EKey, QKey } from "../consts/keys";
 
 export function setupClickHandling(app: Application, world: GameWorld) {
@@ -28,6 +28,8 @@ export function setupClickHandling(app: Application, world: GameWorld) {
   window.addEventListener("keydown", (e) => {
     if (e.code === "KeyQ" || e.code === "KeyE") rotateActiveTile(world, e.code === "KeyQ");
   });
+
+  window.addEventListener("resize", () => RedrawBoard(world));
 }
 
 async function rotateActiveTile(world: GameWorld, left: boolean) {
@@ -70,8 +72,8 @@ async function handleClick(world: GameWorld, pos: Point) {
         return placeAnimal(world, clicked);
     }
   } else {
-    if (world.gameState === GameStateType.PlaceAnimal) setGameStateToPickAnimal(world);
-    if (world.gameState === GameStateType.PlaceTile) setGameStateToPickTile(world);
+    if (world.gameState === GameStateType.PlaceAnimal) setGameState(world, GameStateType.PickAnimal);
+    if (world.gameState === GameStateType.PlaceTile) setGameState(world, GameStateType.PickTile);
   }
 }
 

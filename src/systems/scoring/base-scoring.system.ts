@@ -3,7 +3,7 @@ import Map2D from "../../helpers/map2d";
 import { getNear } from "../hitboxes/available-move.system";
 
 export function getFromProgression(progression: number[], index: number) {
-  if (index === 0) return 0;
+  if (!index) return 0;
   if (index >= progression.length) return progression[progression.length - 1];
   return progression[index];
 }

@@ -20,14 +20,12 @@ export function drawAnimal(offset: PointData, animal: TilePairType, useTexture: 
   return g;
 }
 
-export function drawAnimalsOnTile(g: Graphics, animals: TilePairType[], occupied = false) {
+export function drawAnimalsOnTile(g: Graphics, animals: TilePairType[]) {
   const colors = animals.map((x) => animalColors[x]);
   const offsets = getAnimalsOffset(colors.length);
   if (offsets.length !== colors.length) return;
   colors.forEach((color, i) => {
-    g.circle(offsets[i].x, offsets[i].y, occupied ? PLACED_ANIMAL_R : UNPLACE_ANIMAL_R)
-      .fill(color)
-      .stroke({ width: 2, color: "#000a" });
+    g.circle(offsets[i].x, offsets[i].y, UNPLACE_ANIMAL_R).fill(color).stroke({ width: 2, color: "#000a" });
   });
 }
 

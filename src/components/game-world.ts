@@ -6,6 +6,7 @@ import Pickup from "./pickup";
 import PlayerBoard from "./player-board";
 import { IdManager } from "../helpers/id-manager";
 import { TilePairType } from "../consts/enums/animal-tile-pair.type";
+import { ScoringRule } from "./scoring-rule";
 
 export default interface GameWorld {
   round: number;
@@ -14,6 +15,7 @@ export default interface GameWorld {
   lastPickup?: Pickup;
   gameState: GameStateType;
   animalSetup: TilePairType[];
+  scoringRules: ScoringRule[];
   // UX
   isWaiting: boolean;
   hitboxes: Map<string, Hitbox>;

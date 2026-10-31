@@ -2,9 +2,10 @@ import GameWorld from "../../components/game-world";
 import { HEX_SIZE, STOCK_SIZE } from "../../consts/sizes";
 import { CreateGraphics } from "../hitboxes/create-hitboxes.system";
 import { animateTileMove } from "../animations/tile-animation.system";
-import { setGameStateToPickTile } from "./state-management.system";
 import { shuffle } from "../generic/shuffle.system";
 import { findModeCount } from "../generic/mode.system";
+import { GameStateType } from "../../consts/enums/game-state.type";
+import { setGameState } from "./state-management.system";
 
 const DECK_Y = -HEX_SIZE * 2;
 const animalResetIndexes = [0, 1, 2, 3];
@@ -17,7 +18,7 @@ export async function AddCenterTiles(gameWorld: GameWorld) {
     await fillStock(gameWorld);
   }
 
-  setGameStateToPickTile(gameWorld);
+  setGameState(gameWorld, GameStateType.PickTile);
 }
 
 function fillStock(world: GameWorld) {

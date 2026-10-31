@@ -8,15 +8,11 @@ import { HexTile } from "../../components/hex-tile";
 import { UpdateBoard, UpdateScore } from "../draw-board.system";
 import { Coords } from "../../components/coords";
 import { PlacedTile } from "../../components/placed-tile";
-import {
-  setGameStateToPlaceTile,
-  setGameStateToPickAnimal,
-  setGameStateToPlaceAnimal,
-  setGameStateToPickTile,
-} from "./state-management.system";
+import { setGameState } from "./state-management.system";
 import { AddCenterTiles, clearStock } from "./stock-shuffler.system";
 import { TilePairType } from "../../consts/enums/animal-tile-pair.type";
 import { GameStateType } from "../../consts/enums/game-state.type";
+import { debug } from "../../main";
 
 export function pickTile(world: GameWorld, stockTileHitbox: Hitbox) {
   const stockIndex = world.center.tileStock.findIndex((x) => x.id === stockTileHitbox.renderedOn);
@@ -25,7 +21,7 @@ export function pickTile(world: GameWorld, stockTileHitbox: Hitbox) {
   const tile = world.center.tileStock[stockIndex]!;
   const animal = world.center.animalStock[stockIndex]!;
   world.lastPickup = { tile, tileIndex: stockIndex, animal, animalIndex: stockIndex, tileHitbox: stockTileHitbox };
-  setGameStateToPlaceTile(world);
+  setGameState(world, GameStateType.PlaceTile);
 }
 
 export async function placeTile(world: GameWorld, edgeHitbox: Hitbox) {
@@ -35,7 +31,7 @@ export async function placeTile(world: GameWorld, edgeHitbox: Hitbox) {
   world.isWaiting = true;
   await moveTileFromStockToBoard(world, pickup.tileIndex, pickup.tile, edgeTile.coords, pickup.tileHitbox);
   UpdateBoard(world);
-  setGameStateToPickAnimal(world);
+  setGameState(world, GameStateType.PickAnimal);
 }
 
 function removeEdge(world: GameWorld, edgeTile: EdgeTile, edgeHitbox: Hitbox) {
@@ -73,17 +69,17 @@ export function pickAnimal(world: GameWorld, hitbox: Hitbox) {
   world.lastPickup!.animalHitbox = hitbox;
   world.lastPickup!.animalIndex = stockIndex;
 
-  setGameStateToPlaceAnimal(world);
+  setGameState(world, GameStateType.PlaceAnimal);
 }
 
 export async function placeAnimal(world: GameWorld, toPlaceHitbox: Hitbox) {
   const placementTile = world.player.tiles.getAll().find((x) => x.id === toPlaceHitbox.renderedOn)!;
   const pickup = world.lastPickup!;
   const animal = world.center.animalStock[pickup.animalIndex];
-  if (!placementTile.animals.includes(animal.value)) return false;
+  if (!placementTile.animals.includes(animal.value) && !debug) return false;
 
   world.isWaiting = true;
-  setGameStateToPickTile(world);
+  setGameState(world, GameStateType.PickTile);
   placementTile.occupied = animal.value;
   pickup.animalHitbox!.point = getTilePointOnPlayerBoard(world, placementTile.coords);
   pickup.animalHitbox!.renderedOn = placementTile.id;
@@ -99,7 +95,7 @@ export async function placeAnimal(world: GameWorld, toPlaceHitbox: Hitbox) {
 export async function removeAnimal(world: GameWorld) {
   world.isWaiting = true;
   const pickup = world.lastPickup!;
-  setGameStateToPickTile(world);
+  setGameState(world, GameStateType.PickTile);
   await clearStock(world, [], [pickup.animalIndex]);
   await endRound(world);
 }
@@ -118,6 +114,6 @@ async function endRound(world: GameWorld) {
 }
 
 async function endGame(world: GameWorld) {
-  world.gameState = GameStateType.GameOver;
   await clearStock(world, [0, 1, 2, 3], [0, 1, 2, 3]);
+  setGameState(world, GameStateType.GameOver);
 }

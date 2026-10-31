@@ -2,7 +2,7 @@ import { Graphics, Point, PointData } from "pixi.js";
 import { HexTile } from "../../components/hex-tile";
 import { HEX_SIZE } from "../../consts/sizes";
 import { PlacedTile } from "../../components/placed-tile";
-import { drawAnimalsOnTile } from "./animal-render.system";
+import { drawAnimal, drawAnimalsOnTile } from "./animal-render.system";
 import { terrainPatterns } from "./textures";
 import { TilePairType } from "../../consts/enums/animal-tile-pair.type";
 
@@ -22,8 +22,8 @@ export function drawCenterHex(tile: HexTile, offset: PointData): Graphics {
 export function drawPlayerHex(tile: PlacedTile, offset: PointData): Graphics {
   const g = new Graphics();
   drawHex(g, tile.bioms);
-  const isOccupied = tile.occupied !== TilePairType.Empty;
-  drawAnimalsOnTile(g, isOccupied ? [tile.occupied!] : tile.animals, isOccupied);
+  if (tile.occupied !== TilePairType.Empty) drawAnimal(offset, tile.occupied, true);
+  else drawAnimalsOnTile(g, tile.animals);
   g.position = offset;
   g.rotation = rotationToDeg(tile.rotation);
   return g;
