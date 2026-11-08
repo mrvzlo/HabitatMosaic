@@ -6,10 +6,7 @@ import Map2D from "../../helpers/map2d";
 import { findModeCount } from "../generic/mode.system";
 import { getNear } from "../hitboxes/available-move.system";
 
-export const getFoxSubType = (subType: number): ScoringRule => {
-  const scoring = [scoreDivercity, scoreLargestNear, scoreSurrounded];
-  return (board: PlayerBoard) => scoring[subType](board.tiles);
-};
+export const getFoxSubType = (): ScoringRule[] => [scoreDivercity, scoreLargestNear, scoreSurrounded];
 
 function scoreDivercity(board: Map2D<PlacedTile>) {
   const foxes = board.getAll().filter((x) => x.occupied === TilePairType.FoxLawn);
@@ -20,22 +17,6 @@ function scoreDivercity(board: Map2D<PlacedTile>) {
       .filter((x) => !!x && x.occupied !== TilePairType.Empty)
       .map((x) => x!.occupied);
     sum += new Set(near).size;
-  });
-  return sum;
-}
-
-function scoreFoxB(board: Map2D<PlacedTile>) {
-  const foxes = board.getAll().filter((x) => x.occupied === TilePairType.FoxLawn);
-  let sum = 0;
-  const progression = [0, 3, 5, 7];
-  foxes.forEach((c) => {
-    const near = getNear(c.coords)
-      .map((x) => board.get(x))
-      .filter((x) => !!x && x.occupied !== TilePairType.Empty && x.occupied !== TilePairType.FoxLawn)
-      .map((x) => x!.occupied!)
-      .sort();
-
-    // count pairs
   });
   return sum;
 }

@@ -6,7 +6,7 @@ export enum TilePairType {
   FishSea = 4,
   FoxLawn = 5,
 
-  BobrSwarm = 6,
-  SandScorpio = 7,
+  PigSwamp = 6,
+  SandSnake = 7,
   WolfTundra = 8,
 }

@@ -1,16 +1,11 @@
 import { Coords } from "../../components/coords";
 import { PlacedTile } from "../../components/placed-tile";
-import PlayerBoard from "../../components/player-board";
 import { ScoringRule } from "../../components/scoring-rule";
 import { TilePairType } from "../../consts/enums/animal-tile-pair.type";
 import Map2D from "../../helpers/map2d";
-import { getNear } from "../hitboxes/available-move.system";
 import { getFromProgression, getSameGroupSizes } from "./base-scoring.system";
 
-export const getHawkSubType = (subType: number): ScoringRule => {
-  const scoring = [scoreSingles, scoreHawksWithLOS, scoreLOSCount, scoreLOSPairs, scoreEdgeHawks];
-  return (board: PlayerBoard) => scoring[subType](board.tiles);
-};
+export const getHawkSubType = (): ScoringRule[] => [scoreHawksWithLOS, scoreLOSCount, scoreLOSPairs];
 
 function scoreSingles(board: Map2D<PlacedTile>) {
   const progression = [0, 2, 5, 8, 11, 14, 18, 22, 26];
@@ -40,18 +35,6 @@ function scoreLOSPairs(board: Map2D<PlacedTile>) {
     sum += 3.5;
   });
   return sum;
-}
-
-function scoreEdgeHawks(board: Map2D<PlacedTile>) {
-  const progression = [0, 0, 0, 2, 2, 2, 4, 4, 4, 7, 7, 7, 10, 10, 10, 10, 14, 14, 14, 14, 18, 18, 18, 18, 18, 22, 22, 22, 22, 22, 27];
-  const hawks = board.getAll().filter((x) => x.occupied === TilePairType.BirdMountain);
-  let spaces = new Set<string>();
-  hawks.forEach((x) =>
-    getNear(x.coords)
-      .filter((x) => !board.get(x) || board.get(x)!.occupied === TilePairType.Empty)
-      .forEach((p) => spaces.add(p.intX + "|" + p.intY)),
-  );
-  return getFromProgression(progression, spaces.size);
 }
 
 function getHawksLOSs(board: Map2D<PlacedTile>) {

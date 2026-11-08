@@ -1,15 +1,11 @@
 import { PlacedTile } from "../../components/placed-tile";
-import PlayerBoard from "../../components/player-board";
 import { ScoringRule } from "../../components/scoring-rule";
 import { TilePairType } from "../../consts/enums/animal-tile-pair.type";
 import Map2D from "../../helpers/map2d";
 import { getNear } from "../hitboxes/available-move.system";
 import { getFromProgression } from "./base-scoring.system";
 
-export const getFishSubType = (subType: number): ScoringRule => {
-  const scoring = [scoreAllSizes, scoreSmallSizes, scoreBigSizes];
-  return (board: PlayerBoard) => scoring[subType](board.tiles);
-};
+export const getFishSubType = (): ScoringRule[] => [scoreAllSizes, scoreSmallSizes, scoreBigSizes];
 
 function scoreAllSizes(tiles: Map2D<PlacedTile>) {
   const progression = [0, 2, 5, 8, 12, 16, 20, 25];

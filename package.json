@@ -4,12 +4,14 @@
     "build": "node build.js",
     "test": "node --test",
     "serve": "npx serve dist",
+    "deploy": "gh-pages -d dist",
     "watch": "concurrently \"npm run watch-build\" \"npm run serve\"",
     "watch-build": "nodemon --watch src --ext ts,html --exec \"npm run build\""
   },
   "devDependencies": {
     "concurrently": "^10.0.6",
     "esbuild": "^0.25.5",
+    "gh-pages": "^6.3.0",
     "live-server": "^1.2.2",
     "nodemon": "^3.1.10"
   },
